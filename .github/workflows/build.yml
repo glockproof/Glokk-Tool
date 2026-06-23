@@ -3,6 +3,7 @@ name: Build EXE
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,14 +17,18 @@ jobs:
       with:
         python-version: '3.11'
     
-    - name: Install PyInstaller
-      run: pip install pyinstaller
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
+        pip install pyinstaller
+        pip install requests colorama pystyle pillow phonenumbers whois qrcode dnspython cryptography pynput opencv-python numpy psutil pywin32 wmi
     
     - name: Build EXE
-      run: pyinstaller --onefile Glokk.py
+      run: |
+        pyinstaller --onefile --collect-all requests --collect-all colorama --collect-all pystyle Glokk.py
     
     - name: Upload EXE
       uses: actions/upload-artifact@v4
       with:
-        name: Glokk-EXE
+        name: Glokk-EXE-Fixed
         path: dist/Glokk.exe
